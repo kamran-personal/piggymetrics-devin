@@ -2,4 +2,24 @@ spring:
   data:
     mongodb:
       database: piggymetrics
-      port: 0
+  cloud:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 7.0.9
+
+jwt:
+  signing-key: test-signing-key-for-unit-tests-only
+
+eureka:
+  client:
+    enabled: false
