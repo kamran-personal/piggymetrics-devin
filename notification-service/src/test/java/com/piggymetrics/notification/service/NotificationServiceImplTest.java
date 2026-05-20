@@ -1,19 +1,19 @@
 package com.piggymetrics.notification.service;
 
-import com.google.common.collect.ImmutableList;
 import com.piggymetrics.notification.client.AccountServiceClient;
 import com.piggymetrics.notification.domain.NotificationType;
 import com.piggymetrics.notification.domain.Recipient;
-import org.junit.Before;
-import org.junit.Test;
+import jakarta.mail.MessagingException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class NotificationServiceImplTest {
 
@@ -29,9 +29,9 @@ public class NotificationServiceImplTest {
 	@Mock
 	private EmailService emailService;
 
-	@Before
+	@BeforeEach
 	public void setup() {
-		initMocks(this);
+		openMocks(this);
 	}
 
 	@Test
@@ -48,11 +48,9 @@ public class NotificationServiceImplTest {
 		when(client.getAccount(withError.getAccountName())).thenThrow(new RuntimeException());
 		when(client.getAccount(withNoError.getAccountName())).thenReturn(attachment);
 
-		when(recipientService.findReadyToNotify(NotificationType.BACKUP)).thenReturn(ImmutableList.of(withNoError, withError));
+		when(recipientService.findReadyToNotify(NotificationType.BACKUP)).thenReturn(List.of(withNoError, withError));
 
 		notificationService.sendBackupNotifications();
-
-		// TODO test concurrent code in a right way
 
 		verify(emailService, timeout(100)).send(NotificationType.BACKUP, withNoError, attachment);
 		verify(recipientService, timeout(100)).markNotified(NotificationType.BACKUP, withNoError);
@@ -63,20 +61,16 @@ public class NotificationServiceImplTest {
 	@Test
 	public void shouldSendRemindNotificationsEvenWhenErrorsOccursForSomeRecipients() throws IOException, MessagingException, InterruptedException {
 
-		final String attachment = "json";
-
 		Recipient withError = new Recipient();
 		withError.setAccountName("with-error");
 
 		Recipient withNoError = new Recipient();
 		withNoError.setAccountName("with-no-error");
 
-		when(recipientService.findReadyToNotify(NotificationType.REMIND)).thenReturn(ImmutableList.of(withNoError, withError));
+		when(recipientService.findReadyToNotify(NotificationType.REMIND)).thenReturn(List.of(withNoError, withError));
 		doThrow(new RuntimeException()).when(emailService).send(NotificationType.REMIND, withError, null);
 
 		notificationService.sendRemindNotifications();
-
-		// TODO test concurrent code in a right way
 
 		verify(emailService, timeout(100)).send(NotificationType.REMIND, withNoError, null);
 		verify(recipientService, timeout(100)).markNotified(NotificationType.REMIND, withNoError);

@@ -1,25 +1,21 @@
 package com.piggymetrics.notification.repository;
 
-import com.google.common.collect.ImmutableMap;
 import com.piggymetrics.notification.domain.Frequency;
 import com.piggymetrics.notification.domain.NotificationSettings;
 import com.piggymetrics.notification.domain.NotificationType;
 import com.piggymetrics.notification.domain.Recipient;
-import org.apache.commons.lang.time.DateUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @DataMongoTest
 public class RecipientRepositoryTest {
 
@@ -42,7 +38,7 @@ public class RecipientRepositoryTest {
 		Recipient recipient = new Recipient();
 		recipient.setAccountName("test");
 		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
+		recipient.setScheduledNotifications(Map.of(
 				NotificationType.BACKUP, backup,
 				NotificationType.REMIND, remind
 		));
@@ -74,12 +70,12 @@ public class RecipientRepositoryTest {
 		NotificationSettings remind = new NotificationSettings();
 		remind.setActive(true);
 		remind.setFrequency(Frequency.WEEKLY);
-		remind.setLastNotified(DateUtils.addDays(new Date(), -8));
+		remind.setLastNotified(Date.from(Instant.now().minus(8, ChronoUnit.DAYS)));
 
 		Recipient recipient = new Recipient();
 		recipient.setAccountName("test");
 		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
+		recipient.setScheduledNotifications(Map.of(
 				NotificationType.REMIND, remind
 		));
 
@@ -95,12 +91,12 @@ public class RecipientRepositoryTest {
 		NotificationSettings remind = new NotificationSettings();
 		remind.setActive(true);
 		remind.setFrequency(Frequency.WEEKLY);
-		remind.setLastNotified(DateUtils.addDays(new Date(), -1));
+		remind.setLastNotified(Date.from(Instant.now().minus(1, ChronoUnit.DAYS)));
 
 		Recipient recipient = new Recipient();
 		recipient.setAccountName("test");
 		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
+		recipient.setScheduledNotifications(Map.of(
 				NotificationType.REMIND, remind
 		));
 
@@ -116,12 +112,12 @@ public class RecipientRepositoryTest {
 		NotificationSettings remind = new NotificationSettings();
 		remind.setActive(false);
 		remind.setFrequency(Frequency.WEEKLY);
-		remind.setLastNotified(DateUtils.addDays(new Date(), -30));
+		remind.setLastNotified(Date.from(Instant.now().minus(30, ChronoUnit.DAYS)));
 
 		Recipient recipient = new Recipient();
 		recipient.setAccountName("test");
 		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
+		recipient.setScheduledNotifications(Map.of(
 				NotificationType.REMIND, remind
 		));
 
@@ -137,12 +133,12 @@ public class RecipientRepositoryTest {
 		NotificationSettings remind = new NotificationSettings();
 		remind.setActive(true);
 		remind.setFrequency(Frequency.QUARTERLY);
-		remind.setLastNotified(DateUtils.addDays(new Date(), -91));
+		remind.setLastNotified(Date.from(Instant.now().minus(91, ChronoUnit.DAYS)));
 
 		Recipient recipient = new Recipient();
 		recipient.setAccountName("test");
 		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
+		recipient.setScheduledNotifications(Map.of(
 				NotificationType.BACKUP, remind
 		));
 
